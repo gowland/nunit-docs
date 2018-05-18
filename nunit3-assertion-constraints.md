@@ -186,3 +186,88 @@ Assert.That(listOfDates, Is.Ordered.Descending);
 Expected: collection ordered, descending
 But was:  < 2018-01-09 13:59:57, 2018-12-09 09:42:11, 2018-12-09 07:01:09 >
 ```
+
+## Verify Items in List are Distinct
+### Old
+```csharp
+var items = new[]{3,3,4};
+CollectionAssert.AreEqual(items, items.Distinct());
+```
+#### Output
+```
+Expected is <System.Int32[3]>, actual is <System.Linq.Enumerable+<DistinctIterator>d__64`1[System.Int32]>
+Values differ at index [1]
+Expected: 3
+But was:  4
+```
+
+### NUnit3
+```csharp
+var items = new[]{3,3,4};
+Assert.That(items, Is.Unique);
+```
+#### Output
+```
+Expected: all items unique
+But was:  < 3, 3, 4 >
+```
+
+## <Topic>
+### Old
+```csharp
+```
+#### Output
+```
+```
+
+### NUnit3
+```csharp
+```
+#### Output
+```
+```
+
+## <Topic>
+### Old
+```csharp
+```
+#### Output
+```
+```
+
+### NUnit3
+```csharp
+```
+#### Output
+```
+```
+
+## <Topic>
+### Old
+```csharp
+```
+#### Output
+```
+```
+
+### NUnit3
+```csharp
+```
+#### Output
+```
+```
+
+## <Topic>
+### Old
+```csharp
+```
+#### Output
+```
+```
+
+### NUnit3
+```csharp
+```
+#### Output
+```
+```
