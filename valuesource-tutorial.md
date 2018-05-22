@@ -34,29 +34,27 @@ public void RequiresInterventionReturnsTrueForUseProxy()
     Assert.IsTrue(
         GetClassUnderTest().RequiresIntervention(HttpStatusCode.UseProxy));
 }
-'''
+```
 
-There's no technical reason that you could not put all four of the 'Assert's in a single method, however this is generally considered bad form. The main reason is that if the first 'Assert' fails, the test runner will not run the remaining three. This means if your method gives the wrong result for the first and fourth 'Assert's, you would see only the first one when you run your tests. Only after you fixed the first one and then re-ran the tests would you see that the fourth was also failing.
+There's no technical reason that you could not put all four of the `Assert`s in a single method, however this is generally considered bad form. The main reason is that if the first `Assert` fails, the test runner will not run the remaining three. This means if your method gives the wrong result for the first and fourth `Assert`s, you would see only the first one when you run your tests. Only after you fixed the first one and then re-ran the tests would you see that the fourth was also failing.
 ## Using the Values Attribute
 Wouldn't it be nice, though, if you had to write only a single test method? Consider a typical unit test scenario where the test set up is more complex. In such a case, a single method would limit duplication and reduce maintenance costs. It would also be easier to read.
 
-That's where the 'Values' attribute comes in. It allows you to write a single test method that is functionally equivalent to the entire set of tests above.
+That's where the `Values` attribute comes in. It allows you to write a single test method that is functionally equivalent to the entire set of tests above.
 
 ```csharp
 [Test]
 public void RequiresInterventionReturnsTrueForAppropriateCodes(
-    <span style="color: #ee3333;">[Values(HttpStatusCode.Moved, HttpStatusCode.Redirect,
+    [Values(HttpStatusCode.Moved, HttpStatusCode.Redirect,
         HttpStatusCode.Unauthorized, HttpStatusCode.UseProxy)]
-    HttpStatusCode code</span>)
+    HttpStatusCode code)
 {
-    Assert.IsTrue(GetClassUnderTest().RequiresIntervention(<span style="color: #ee3333;">code</span>));
+    Assert.IsTrue(GetClassUnderTest().RequiresIntervention(code));
 }
 ```
 This test method is similar to each of the tests above except that:
-<ol>
- 	<li>The test method accepts a parameter named 'code' of type 'HttpStatusCode'</li>
- 	<li>The 'Values' attribute is applied to the parameter</li>
-</ol>
+* The test method accepts a parameter named 'code' of type 'HttpStatusCode'
+* The 'Values' attribute is applied to the parameter
 Notice too that all four of the 'HttpStatusCode' instances are passed to the 'Value' attribute's constructor.
 
 When you run this test, the test runner calls the test method once for each value in the 'Values' attribute's constructor, each time setting the method's 'code' parameter to that value.
@@ -85,7 +83,7 @@ Now, let's modify the existing unit test with 'ValueSource' attribute.
 ```csharp
 [Test]
 public void RequiresInterventionReturnsTrueForAppropriateCodes(
-    [<span style="color: #ee3333;">ValueSource("RequiresInterventionCodes")</span>]
+    [ValueSource("RequiresInterventionCodes")]
     HttpStatusCode code)
 {
     Assert.IsTrue(GetClassUnderTest().RequiresIntervention(code));
@@ -116,11 +114,9 @@ If you run in the test runner, you see each test method listed 4 times, each wit
 Your existing test for 'RequiresIntervention' is good and correct, but testing that it returns 'true' for the correct values is not enough. You also want to test that the method returns 'false' for all other values.
 
 So, clearly you would prefer to write only a single test method to test all other values. You could create another static array with all the other values of the enum. But this has three problems.
-<ol>
- 	<li>The 'HttpStatusCode' enum holds dozens of values. The list of values which don't require intervention would be huge.</li>
- 	<li>What happens if a new value is added to the enum? Let's say you go down the path of maintaining two separate arrays. When a value is added, your test becomes outdated and you have no way of knowing it.</li>
- 	<li>Maintaining two lists is really a subtle form of duplication. You would have two different members that both identify which values require intervention (one by inclusion, one by omission). Both of these need to be kept in sync. Plus, you would need to write some mechanism to verify that the lists are in sync.</li>
-</ol>
+1. The 'HttpStatusCode' enum holds dozens of values. The list of values which don't require intervention would be huge.
+1. What happens if a new value is added to the enum? Let's say you go down the path of maintaining two separate arrays. When a value is added, your test becomes outdated and you have no way of knowing it.
+1. Maintaining two lists is really a subtle form of duplication. You would have two different members that both identify which values require intervention (one by inclusion, one by omission). Both of these need to be kept in sync. Plus, you would need to write some mechanism to verify that the lists are in sync.
 So what can be done?
 
 Instead of another array, let's create a method to return the list of 'HttpStatusCode' values which are not in the 'RequiresInterventionCodes' array.
@@ -143,10 +139,8 @@ public void RequiresInterventionReturnsFalseForAllOtherCodes(
 }
 ```
 This is very similar to the previous 'ValueSource' unit test except that is asserts that:
-<ul>
-  <li>the return value is false and</li> 
-  <li>the string passed to the 'ValueSource' attribute's constructor is the name of your method.</li>
-</ul>
+* the return value is false and 
+* the string passed to the 'ValueSource' attribute's constructor is the name of your method.
 If you were to run this method, you would get the following.
 
 <img class="aligncenter wp-image-411 size-full" src="http://www.readytorocksd.com/wp-content/uploads/2016/06/test_result_take4.png" alt="ValueSource accepts methods as well as arrays" width="695" height="261" />
@@ -159,7 +153,7 @@ If you're on C# 6.0 or higher you can take advantage of the 'nameof' operator.
 ```csharp
 [Test]
 public void RequiresInterventionReturnsFalseForAllOtherCodes(
-    [ValueSource(<span style="color: #ee3333;">nameof(RequiresInterventionCodes)</span>)]
+    [ValueSource(nameof(RequiresInterventionCodes))]
     HttpStatusCode code)
 {
     Assert.IsTrue(GetClassUnderTest().RequiresIntervention(code));
@@ -171,7 +165,7 @@ Another downside of using the 'Values' attribute is that it requires that what y
 
 Here are the types of things you can put in a `Values` attribute.
 ```csharp
-<span style="color: #339933;">// Constant expressions</span>
+// Constant expressions
 public void Valid([Values(3,2,1)] int val) { ... }
 public void Valid([Values("blah", "foo")] string val) { ... }
 public void Valid(
@@ -182,10 +176,10 @@ public void Valid([Values(typeof(HttpStatusCode))] Type val) { ... }
 public void Test([Values(3 * 2, 2 * 8)] int val) { ... }
 public void Test([Values("blah" + "blah", "foo" + "bar")] string val) { ... }
 
-<span style="color: #339933;">// Array creation expressions... Note that this runs only twice</span>
+// Array creation expressions... Note that this runs only twice
 public void Test([Values(new[]{1,2,3}, new[]{4,5,6})] int[] val) { ... }
 
-<span style="color: #339933;">// Constant expressions using declared constants</span>
+// Constant expressions using declared constants
 private const int MyInt1 = 1;
 private const int MyInt2 = 2;
 private const int MyInt3 = 3;
@@ -201,7 +195,7 @@ For example, let's say instead of an 'HttpStatusCode' instance, your 'RequiresIn
 ```csharp
 [Test]
 public void RequiresInterventionReturnsTrueForAppropriateCodes(
-    [Values(new WebResult(HttpStatusCode.Moved, "Page moved"), <span style="color: #339933;"> /*...*/ </span>)]
+    [Values(new WebResult(HttpStatusCode.Moved, "Page moved"),  /*...*/ )]
     WebResult result)
 {
     Assert.IsTrue(GetClassUnderTest().RequiresIntervention(result));
@@ -377,10 +371,10 @@ As you might expect, the test method simply adds a third parameter with its own 
 public void ShouldRetryReturnsTrueForAppropriateCodesAndLowValuesAndMaxRetries(
     [ValueSource(typeof (HttpStatusCodeCommon), "RetryConnectionCodes")] 
     HttpStatusCode code,
-    [Values(1, 2)] int retries<span style="color: #ee3333;">, 
-    [Values(3, 4)] int maxRetries</span>)
+    [Values(1, 2)] int retries, 
+    [Values(3, 4)] int maxRetries)
 {
-    Assert.IsTrue(GetClassUnderTest(<span style="color: #ee3333;">maxRetries</span>).ShouldRetry(code, retries));
+    Assert.IsTrue(GetClassUnderTest(maxRetries).ShouldRetry(code, retries));
 }
 ```
 
@@ -399,7 +393,7 @@ In sequential mode, instead of trying every combination of values, NUnit will ru
 To run the test sequentially, you just need to add the 'Sequential' attribute to the test method.
 
 ```csharp
-<span style="color: #ee3333;">[Sequential]</span>
+[Sequential]
 [Test]
 public void ShouldRetryReturnsTrueSequential(
     [ValueSource(typeof (HttpStatusCodeCommon), "RetryConnectionCodes")] 
@@ -420,7 +414,7 @@ One tricky thing with using the 'Sequential' attribute is that you'll want to ma
 
 In this particular case, the third test fails.
 
-There are other ways to test sets of values sequentially. If you find a use for the 'Sequential' attribute, you will likely be better off using the <a href="http://www.readytorocksd.com/improve-test-readability-with-testcase-result-testcasesouce-result/">'TestCase' method attribute</a> instead of 'Values' or 'ValueSource'.
+There are other ways to test sets of values sequentially. If you find a use for the 'Sequential' attribute, you will likely be better off using the `TestCase` method attribute instead of 'Values' or 'ValueSource'.
 
 
 ## The PairWise Attribute
@@ -481,8 +475,8 @@ This will work just fine. But, there's no need to write the 'GetAllHandledCodes'
 ```csharp
 [Test]
 public void IsHandledCodeReturnsTrueForHandledCodes(
-    <span style="color: #ee3333;">[ValueSource("RequiresInterventionCodes")] 
-    [ValueSource("RetryConnectionCodes")]</span> 
+    [ValueSource("RequiresInterventionCodes")] 
+    [ValueSource("RetryConnectionCodes")] 
     HttpStatusCode code)
 {
     Assert.IsTrue(GetClassUnderTest().IsHandledCode(code));
@@ -494,7 +488,7 @@ As it turns out, this test is missing one status code that the class does handle
 ```csharp
 [Test]
 public void IsHandledCodeReturnsTrueForHandledCodes(
-    <span style="color: #ee3333;">[Values(HttpStatusCode.OK)]</span>
+    [Values(HttpStatusCode.OK)]
     [ValueSource("RequiresInterventionCodes")] 
     [ValueSource("RetryConnectionCodes")] 
     HttpStatusCode code)
@@ -531,7 +525,7 @@ As of NUnit 3.0, however, the 'Values' attribute can do the same thing without a
 ```csharp
 [Test]
 public void IsHandledCodeDoesNotThrowForAnyCode(
-    <span style="color: #ee3333;">[Values]</span>
+    [Values]
     HttpStatusCode code)
 {
     Assert.DoesNotThrow(() => GetClassUnderTest().IsHandledCode(code));
@@ -565,7 +559,7 @@ As we've seen above, the 'Values' attribute doesn't work with constructed values
 ```csharp
 [Test]
 public void TestDate(
-    <span style="color: #ee3333;">[Values("2017/01/01", "3000/09/01", "2016/09/07 00:00:01")]</span>
+    [Values("2017/01/01", "3000/09/01", "2016/09/07 00:00:01")]
     DateTime date)
 {
     Assert.IsTrue(date > new DateTime(2016,9,7));
@@ -576,10 +570,9 @@ The exact format of the date string depends on your computer settings. The slash
 ```csharp
 [Test]
 public void TestDate(
-    [Values("2017<span style="color: #ee3333;">-</span>01<span style="color: #ee3333;">-</span>01", "3000<span style="color: #ee3333;">-</span>09<span style="color: #ee3333;">-</span>01", "2016<span style="color: #ee3333;">-</span>09<span style="color: #ee3333;">-</span>07 00:00:01")]
+    [Values("2017-01-01", "3000-09-01", "2016-09-07 00:00:01")]
     DateTime date)
 {
     Assert.IsTrue(date > new DateTime(2016,9,7));
 }
 ```
-</div>
