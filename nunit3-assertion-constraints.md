@@ -4,7 +4,7 @@ At some point the old style assertions like `Assert.AreEqual` will be depricated
 
 Constraints have a few of advantages:
 * Intent is communicated more clearly
-* In the case of failure, the test output describes the actual problem more clearly
+* In the case of failure, the test output describes the actual problem more clearly, especially for more complex cases
 
 There are many more assertion constraints available than given below. Check out their documentation: https://github.com/nunit/docs/wiki/Constraints
 
