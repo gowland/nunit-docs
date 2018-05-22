@@ -126,3 +126,128 @@ var listOfDates = new[]
 };
 
 Assert.IsTrue(listOfDates.All(d => d >= minDate && d < maxDate));
+
+```
+#### Output
+```
+Expected: True
+But was:  False
+```
+
+### NUnit3
+```csharp
+var minDate = new DateTime(2018, 5, 9);
+var maxDate = new DateTime(2018, 5, 10);
+
+var listOfDates = new[]
+{
+    new DateTime(2018, 5, 9, 13, 59, 57),
+    new DateTime(2018, 5, 19, 9, 42, 11),
+    new DateTime(2018, 5, 9, 7, 1, 09),
+};
+
+Assert.That(listOfDates, Is.All.InRange(minDate, maxDate));
+```
+#### Output
+```
+Expected: all items in range (2018-05-09 12:00:00 AM,2018-05-10 12:00:00 AM)
+But was:  < 2018-05-09 13:59:57, 2018-05-19 09:42:11, 2018-05-09 07:01:09, 2018-05-09 03:22:03 >
+```
+
+## Verify List is Ordered Descending
+### Old
+```csharp
+var listOfDates = new[]
+{
+    new DateTime(2018, 1, 9, 13, 59, 57),
+    new DateTime(2018, 12, 9, 9, 42, 11),
+    new DateTime(2018, 12, 9, 7, 1, 09),
+};
+
+CollectionAssert.AreEqual(sut.ListOfDates, listOfDates.OrderByDescending(d => d));
+```
+#### Output
+```
+Expected is <System.DateTime[3]>, actual is <System.Linq.OrderedEnumerable`2[System.DateTime,System.DateTime]>
+  Values differ at index [0]
+  Expected: 2018-01-09 13:59:57
+  But was:  2018-12-09 09:42:11
+```
+
+### NUnit3
+```csharp
+var listOfDates = new[]
+{
+    new DateTime(2018, 1, 9, 13, 59, 57),
+    new DateTime(2018, 12, 9, 9, 42, 11),
+    new DateTime(2018, 12, 9, 7, 1, 09),
+};
+
+Assert.That(listOfDates, Is.Ordered.Descending);
+```
+#### Output
+```
+Expected: collection ordered, descending
+But was:  < 2018-01-09 13:59:57, 2018-12-09 09:42:11, 2018-12-09 07:01:09 >
+```
+
+## Verify List Order for Complex Types
+### Old
+```csharp
+var listOfDates = new[]
+{
+    new DateTime(2018, 1, 9, 13, 59, 57),
+    new DateTime(2018, 12, 9, 9, 42, 11),
+    new DateTime(2018, 12, 9, 7, 1, 09),
+};
+CollectionAssert.AreEqual(listOfDates, listOfDates.OrderBy(t => t.Year).ThenByDescending(t => t.Month));
+```
+#### Output
+```
+Expected is <System.DateTime[3]>, actual is <System.Linq.OrderedEnumerable`2[System.DateTime,System.Int32]>
+Values differ at index [0]
+Expected: 2018-01-09 13:59:57
+But was:  2018-12-09 09:42:11
+```
+
+### NUnit3
+You can also use customer comparers to test order; not shown.
+```csharp
+var listOfDates = new[]
+{
+    new DateTime(2018, 1, 9, 13, 59, 57),
+    new DateTime(2018, 12, 9, 9, 42, 11),
+    new DateTime(2018, 12, 9, 7, 1, 09),
+};
+Assert.That(listOfDates, Is.Ordered.By(nameof(DateTime.Year)).Then.By(nameof(DateTime.Month)).Descending);
+```
+#### Output
+```
+Expected: collection ordered by "Year" then by "Month", descending
+But was:  < 2018-01-09 13:59:57, 2018-12-09 09:42:11, 2018-12-09 07:01:09 >
+```
+
+## Verify Items in List are Distinct
+### Old
+```csharp
+var items = new[]{3,3,4};
+CollectionAssert.AreEqual(items, items.Distinct());
+```
+#### Output
+```
+Expected is <System.Int32[3]>, actual is <System.Linq.Enumerable+<DistinctIterator>d__64`1[System.Int32]>
+Values differ at index [1]
+Expected: 3
+But was:  4
+```
+
+### NUnit3
+```csharp
+var items = new[]{3,3,4};
+Assert.That(items, Is.Unique);
+```
+#### Output
+```
+Expected: all items unique
+But was:  < 3, 3, 4 >
+```
