@@ -67,6 +67,7 @@ Notice too that all four of the 'HttpStatusCode' instances are passed to the 'Va
 When you run this test, the test runner calls the test method once for each value in the 'Values' attribute's constructor, each time setting the method's 'code' parameter to that value.
 
 In the test runner's output, each run will show as a separate test with a description which includes the value passed in. And here's where this approach trumps simply putting four asserts in a single method: if the first one fails, the other three will still run.
+
 ![Test output](valuesource-pics/test_result_take2.png)
 
 This is good, but we're just getting started.
@@ -125,7 +126,7 @@ Here's the key benefit: you've declared the array once, but thanks to the 'Value
 
 If you run in the test runner, you see each test method listed 4 times, each with their respective value from 'RequiresInterventionCodes'.
 
-![You can re-use value sources in multiple test methods](valuesource-pics\test_result_take3.png)
+![You can re-use value sources in multiple test methods](valuesource-pics/test_result_take3.png)
 
 ## Programmatically Creating a Source
 
@@ -169,7 +170,7 @@ This is very similar to the previous 'ValueSource' unit test except that is asse
 
 If you were to run this method, you would get the following.
 
-![ValueSource accepts methods as well as arrays](valuesource-pics\test_result_take4.png)
+![ValueSource accepts methods as well as arrays](valuesource-pics/test_result_take4.png)
 
 ## It's Easy to Get the Name Wrong
 
@@ -268,11 +269,11 @@ public void RequiresInterventionReturnsTrueForAppropriateCodes(
 
 If you were to run the above test, you would get output like:
 
-![Passing class instances to ValueSource without over ridding ToString](valuesource-pics\take_6_wo_tostring.png)
+![Passing class instances to ValueSource without over ridding ToString](valuesource-pics/take_6_wo_tostring.png)
 
 If you override the 'ToString' method of the 'MyWebResult' class you'll get the expected one row per value like:
 
-![Passing class instances to ValueSource with over ridding ToString](valuesource-pics\take_6_w_tostring.png)
+![Passing class instances to ValueSource with over ridding ToString](valuesource-pics/take_6_w_tostring.png)
 
 Prior to NUnit 3, if you ran the above test, it would show one result per value passed to the method regardless of whether the 'ToString' method was overridden. The downside was that the output wasn't particularly useful since the default 'ToString' implementation returns the class name. That's not very useful for interpreting which test is which.
 
@@ -396,7 +397,7 @@ So, what happens when you run this?
 
 By default, NUnit will run this test once for every combination of the values. In this case, it will run the method four times, passing "GatewayTimeout, 1", "GatewayTimeout, 2", "RequestTimeout, 1", and "RequestTimeout, 2" successively.
 
-![A test run with two parameters](valuesource-pics\multi_param_test_run.png)
+![A test run with two parameters](valuesource-pics/multi_param_test_run.png)
 
 ## When You Have More Than Two Parameters With Value or ValueSource
 
@@ -420,7 +421,7 @@ public void ShouldRetryReturnsTrueForAppropriateCodesAndLowValuesAndMaxRetries(
 
 What happens when this test is run? The test runner once again runs the test method once for every combination of inputs.
 
-![Result of test with three paramters](valuesource-pics\3params-1.png)
+![Result of test with three paramters](valuesource-pics/3params-1.png)
 
 Trying all combinations of values is the default behaviour, but it may not be what you want. NUnit gives you more options for processing multiple parameters.
 
@@ -447,11 +448,11 @@ public void ShouldRetryReturnsTrueSequential(
 
 If you run this test, you get the following.
 
-![Test output using the Sequential method attribute](valuesource-pics\sequential.png)
+![Test output using the Sequential method attribute](valuesource-pics/sequential.png)
 
 One tricky thing with using the 'Sequential' attribute is that you'll want to make sure that you provide the same number of values to each parameter. For example, in the example above, let's say you later decided that you want to test two more retry/max retry pairs. So you add another value for each the 'retries' and 'maxRetries' parameters. In this case, the first parameter has only 2 values while the others have 3 each. If you run this, when it runs the method the third time it will pass 'null', '3', and '5' to test method parameters respectively.
 
-![Test output using the Sequential method attribute when value counts are mismatched](valuesource-pics\sequential_mismatch.png)
+![Test output using the Sequential method attribute when value counts are mismatched](valuesource-pics/sequential_mismatch.png)
 
 In this particular case, the third test fails.
 
@@ -540,7 +541,7 @@ public void IsHandledCodeReturnsTrueForHandledCodes(
 ```
 
 If you run this, you'll see that the method is run once for each value contained in the three attributes:
-![Combined attributes test result](valuesource-pics\is_handled_code_test_results.png)
+![Combined attributes test result](valuesource-pics/is_handled_code_test_results.png)
 
 ## Values Attribute's Special Cases
 
