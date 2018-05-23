@@ -67,7 +67,7 @@ Notice too that all four of the 'HttpStatusCode' instances are passed to the 'Va
 When you run this test, the test runner calls the test method once for each value in the 'Values' attribute's constructor, each time setting the method's 'code' parameter to that value.
 
 In the test runner's output, each run will show as a separate test with a description which includes the value passed in. And here's where this approach trumps simply putting four asserts in a single method: if the first one fails, the other three will still run.
-![Test output](valuesource-pics\test_result_take2.png)
+![Test output](valuesource-pics/test_result_take2.png)
 
 This is good, but we're just getting started.
 
