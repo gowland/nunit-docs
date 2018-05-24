@@ -13,6 +13,7 @@ Fortunately, many unit testing frameworks do provide the tools we need to DRY up
 (NOTE: The following examples are in NUnit 3. As of writing, few 3rd party test runners play nice with NUnit 3, so our refactored unit tests will fail. NUnit 2.x supports all the functionality used in these examples, but uses a slightly different syntax as indicated where necessary below.)
 
 ## Wet Test Code
+
 Let’s take a look at the unit tests for a fictitious `OrderValidator` class. The `OrderValidator` looks at the contents of a shopping cart and evaluates their validity. For the purposes of this demo, we’re going to focus on one property in particular, `HasOverlappingDiscounts`.
 
 `HasOverlappingDiscounts` should be true in the case where both of these two conditions are true: the order has sale items in the cart and there is a coupon applied. It should be false in all other cases. It’s just simple AND logic, and so we have the following four unit tests which cover all possible inputs.
@@ -26,7 +27,7 @@ public void HasOverlappingDiscountsIsFalseIfNoCouponsAndNoSaleItemsTest()
     CouponProvider = GetCouponProviderStub(hasAppliedCoupons: false),
     SaleItemsProvider = GetSaleItemsProviderStub(hasSaleItems: false)
   };
- 
+
   var sut = factory.GetOrderValidator();
   Assert.IsFalse(sut.HasOverlappingDiscounts);
 }
@@ -77,6 +78,7 @@ public void HasOverlappingDiscountsIsTrueIfHasCouponsAndHasSaleItemsTest()
 As you can see, there’s a lot of repetition. The setup for each test is remarkably similar. Further, the the assert is identical in the first three methods. We’ve already introduced helper methods to create our stubs, but the tests are still very similar. There must be something more we can do to reduce the amount of duplicated code. Fortunately, NUnit has the concept of parametertized testing.
 
 ## First Step to Parameterized Testing
+
 Parameterized testing is simply passing values into a test method through method parameters rather than hard coding values within the method itself.
 
 Let’s refactor our first test to take advantage of parametertized testing. We can apply the `TestCase` attribute with two pieces of data.

@@ -3,6 +3,7 @@
 Starting in NUnit 3, `TestCaseSource` and `ValueSource` must reference static members. This restriction really gets in the way sometimes; some methods or properties cannot be made static.
 
 ## The Work Around
+
 When my employer switched to NUnit 3, several of the base fixtures we had created started failing. These base fixtures saved us tonnes of time writing boiler plate code. However, they relied heavily on abstract methods. As you may know, abstract methods cannot be made static. To retain our base classes, we developed the following work around taking advantage of NUnit 3’s `Assert.Multiple`.
 
 Say you start with the following code. Our problem is that `NonStaticValueSource` cannot be made static.
@@ -11,7 +12,7 @@ Say you start with the following code. Our problem is that `NonStaticValueSource
 [Test]
 public void MyTest([ValueSource("NonStaticValueSource")] int value)
 {
-  int expected = value; 
+  int expected = value;
   var otherClass = new OtherClass();
   otherClass.Value = value;
   var sut = new ClassUnderTest(otherClass);
@@ -31,7 +32,7 @@ public void MyTest()
 
   foreach(int value in NonStaticValueSource())
   {
-    int expected = value; 
+    int expected = value;
     otherClass.Value = value;
     var sut = new ClassUnderTest(otherClass);
     Assert.AreEqual(expected, sut.DoThing());
@@ -57,7 +58,7 @@ public void MyTest()
   {
     foreach(int value in NonStaticValueSource())
     {
-      int expected = value; 
+      int expected = value;
       otherClass.Value = value;
       var sut = new ClassUnderTest(otherClass);
       Assert.AreEqual(expected, sut.DoThing());
@@ -77,4 +78,5 @@ If you have multiple non-static `ValueSource`s, you’ll have to use nested loop
 If you have a non-static `TestCaseSourse` which passes more than one value or has specified return value, you’ll have to do more work. You can create a new private nested class which encapsulates the data, or, if there’s only two, you can use a `Tuple`.
 
 ## Warning
+
 Note that, depending on your test runner, the test name may change. If you’re using something like Team City, that means the original test will never show as fixed because it ceases to exist. In that case, you can mark it as fixed and it will go away.
