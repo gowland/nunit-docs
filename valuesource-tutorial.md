@@ -307,7 +307,7 @@ So, let's create a class and move the WebResult array from your existing test fi
 ```csharp
 public static class HttpStatusCodeCommon
 {
-    private static readonly HttpStatusCode[] IntervnetionCodes =
+    private static readonly HttpStatusCode[] InterventionCodes =
     {
         HttpStatusCode.Moved,
         HttpStatusCode.Redirect,
@@ -327,7 +327,7 @@ If you were to try to run the test now that the array is no longer in the test f
 ```csharp
 [Test]
 public void RequiresInterventionReturnsTrueForAppropriateCodes(
-    [ValueSource(typeof(HttpStatusCodeCommon), "RequiresIntervnetionCodes")]
+    [ValueSource(typeof(HttpStatusCodeCommon), "RequiresInterventionCodes")]
     HttpStatusCode code)
 {
     Assert.IsTrue(GetClassUnderTest().RequiresIntervention(code));
@@ -339,7 +339,7 @@ Now the test compiles and runs correctly. From here, you can create a new fixtur
 ```csharp
 [Test]
 public void ShowWarningReturnsTrueForAppropriateCodes(
-    [ValueSource(typeof(HttpStatusCodeCommon), "RequiresIntervnetionCodes")]
+    [ValueSource(typeof(HttpStatusCodeCommon), "RequiresInterventionCodes")]
     HttpStatusCode code)
 {
     Assert.IsTrue(GetClassUnderTest().ShowWarning(code));
